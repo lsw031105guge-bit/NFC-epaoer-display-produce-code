@@ -1,0 +1,46 @@
+/*
+ * XIAO nRF54LM20A + Seeed 2.13" Quadruple Color ePaper
+ * (Good Display GDEY0213F51, controller JD79661, 122x250, 4 colors)
+ *
+ * Select this overlay with:
+ *   west build ... -DDTC_OVERLAY_FILE=boards/quadcolor.overlay
+ * (it replaces the default BW overlay; both set cs-gpios on &xiao_spi).
+ *
+ * Wiring (XIAO pins), matching the Seeed ePaper Driver Board:
+ *   D8  SCK   (xiao_spi)
+ *   D10 MOSI  (xiao_spi)
+ *   D1  CS    (active low)
+ *   D3  DC    (data/command select)
+ *   D0  RST   (active low)
+ *   D2  BUSY  (LOW = busy, opposite of the BW panel)
+ */
+
+/ {
+	chosen {
+		zephyr,display = &jd79661_2in13_quadcolor;
+	};
+
+	mipi_dbi_2in13_quadcolor {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&xiao_spi>;
+		dc-gpios = <&xiao_d 3 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&xiao_d 0 GPIO_ACTIVE_LOW>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		jd79661_2in13_quadcolor: jd79661fb@0 {
+			compatible = "jd79661,gdey0213f51";
+			mipi-max-frequency = <4000000>;
+			reg = <0>;
+			/* Landscape: 250 gates (x) x 122 sources (y). */
+			width = <250>;
+			height = <122>;
+			busy-gpios = <&xiao_d 2 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
+
+&xiao_spi {
+	status = "okay";
+	cs-gpios = <&xiao_d 1 GPIO_ACTIVE_LOW>;
+};

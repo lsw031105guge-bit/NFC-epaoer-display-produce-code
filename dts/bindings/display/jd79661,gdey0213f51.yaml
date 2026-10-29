@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Good Display GDEY0213F51 (Seeed 2.13" Quadruple Color ePaper) panel with
+  an integrated JD79661 controller. 250 gates x 122 visible sources, 2bpp
+  RAM (black / white / yellow / red), driven in landscape orientation.
+
+compatible: "jd79661,gdey0213f51"
+
+include: [mipi-dbi-spi-device.yaml, display-controller.yaml]
+
+properties:
+  busy-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      BUSY pin. The JD79661 asserts BUSY LOW while busy; the pin should
+      be configured as active high so a logical read of 0 means busy.
