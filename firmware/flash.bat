@@ -4,7 +4,8 @@ REM XIAO nRF54LM20A 一键烧录脚本 (Windows)
 REM
 REM 用法:
 REM   flash.bat                                REM 烧录默认的黑白(1-bit)固件
-REM   flash.bat xiao_nrf54lm20a_epaper_nfc_4color.hex   REM 烧录 4 色固件
+REM   flash.bat xiao_nrf54lm20a_epaper_nfc_bw.hex   REM 显式指定黑白固件
+REM   flash.bat <其它.hex>                       REM 烧录任意 hex 固件
 REM
 REM 前置:
 REM   1. 用 USB-C 线连接 XIAO nRF54LM20A(板载 SAMD11 枚举为 CMSIS-DAP)

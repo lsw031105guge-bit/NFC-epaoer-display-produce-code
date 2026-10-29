@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NFC ePaper Display · 生产固件</title>
-<meta name="description" content="XIAO nRF54LM20A + 2.13" ePaper 的 NFC 墨水屏生产固件,手机一碰即可换屏,固件直接下载烧录。">
+<meta name="description" content="XIAO nRF54LM20A + 2.13 ePaper 的 NFC 墨水屏生产固件,手机一碰即可换屏,固件直接下载烧录。">
 <style>
   :root{
     --paper:      #f4f1ea;
@@ -15,78 +15,75 @@
     --ink-faint:  #b9b4a8;
     --line:       #d9d3c6;
     --accent:     #1f3a5f;
+    --warn:       #8a6d1f;
+    --warn-bg:    #f7f0d8;
     --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Courier New",monospace;
     --serif: "Songti SC","Noto Serif SC","Source Han Serif SC",STSong,Georgia,"Times New Roman",serif;
     --sans: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:      #15161a;
-      --paper-card: #1c1d22;
-      --paper-soft: #202128;
-      --ink:        #ece9e0;
-      --ink-soft:   #9a948a;
-      --ink-faint:  #5a5550;
-      --line:       #34343c;
-      --accent:     #7fa9d6;
+      --paper:#15161a; --paper-card:#1c1d22; --paper-soft:#202128;
+      --ink:#ece9e0; --ink-soft:#9a948a; --ink-faint:#5a5550;
+      --line:#34343c; --accent:#7fa9d6;
+      --warn:#d8b65a; --warn-bg:#2a2618;
     }
-  }
-  :root[data-theme="dark"]{
-    --paper:#15161a; --paper-card:#1c1d22; --paper-soft:#202128;
-    --ink:#ece9e0; --ink-soft:#9a948a; --ink-faint:#5a5550;
-    --line:#34343c; --accent:#7fa9d6;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
   html{ -webkit-text-size-adjust:100%; }
   body{
     background:var(--paper); color:var(--ink);
-    font-family:var(--sans); line-height:1.65;
-    font-size:16px;
+    font-family:var(--sans); line-height:1.65; font-size:16px;
     -webkit-font-smoothing:antialiased;
   }
   .wrap{ max-width:880px; margin:0 auto; padding:0 16px; }
 
   /* hero */
-  header.hero{
-    border-bottom:1px solid var(--line);
-    padding:56px 0 40px;
-  }
+  header.hero{ border-bottom:1px solid var(--line); padding:48px 0 36px; }
+  .hero-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; }
   .hero .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:.18em;
     text-transform:uppercase; color:var(--ink-soft);
-    display:flex; align-items:center; gap:10px; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
   }
   .hero .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); display:inline-block; }
+  .lang{
+    display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden;
+    background:var(--paper-card); font-family:var(--mono); font-size:12px;
+  }
+  .lang button{
+    border:none; background:transparent; color:var(--ink-soft);
+    padding:6px 12px; cursor:pointer; font-family:inherit; font-size:inherit;
+  }
+  .lang button.on{ background:var(--ink); color:var(--paper); }
   .hero h1{
     font-family:var(--serif); font-weight:700;
-    font-size:clamp(28px,5.5vw,40px); line-height:1.2; letter-spacing:-.01em;
-    margin-bottom:14px;
+    font-size:clamp(26px,5.2vw,38px); line-height:1.2; letter-spacing:-.01em; margin-bottom:14px;
   }
   .hero p.lead{ font-size:17px; color:var(--ink-soft); max-width:60ch; }
-
-  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
   .badge{
     font-family:var(--mono); font-size:12px;
     border:1px solid var(--line); border-radius:999px;
-    padding:5px 12px; color:var(--ink-soft);
-    background:var(--paper-card);
+    padding:5px 12px; color:var(--ink-soft); background:var(--paper-card);
   }
 
-  /* sections */
-  section{ padding:40px 0; border-bottom:1px solid var(--line); }
-  section h2{
-    font-family:var(--serif); font-size:22px; font-weight:700;
-    margin-bottom:6px; letter-spacing:-.01em;
-  }
-  section .sub{ color:var(--ink-soft); font-size:14px; margin-bottom:22px; }
+  section{ padding:36px 0; border-bottom:1px solid var(--line); }
+  section h2{ font-family:var(--serif); font-size:22px; font-weight:700; margin-bottom:6px; letter-spacing:-.01em; }
+  section .sub{ color:var(--ink-soft); font-size:14px; margin-bottom:20px; }
   p{ margin-bottom:14px; }
   a{ color:var(--accent); text-decoration:none; }
   a:hover{ text-decoration:underline; }
   ul{ padding-left:20px; margin-bottom:14px; }
   li{ margin-bottom:6px; }
   code, pre{ font-family:var(--mono); }
+  code{ background:var(--paper-soft); padding:1px 5px; border-radius:4px; font-size:.92em; }
 
-  /* firmware cards */
+  .note{
+    background:var(--warn-bg); border:1px solid var(--warn);
+    color:var(--warn); border-radius:10px; padding:12px 16px; font-size:14px; margin-bottom:18px;
+  }
+
   .fw-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:560px){ .fw-grid{ grid-template-columns:1fr; } }
   .fw-card{
@@ -102,16 +99,19 @@
   .fw-card .desc{ font-size:14px; color:var(--ink-soft); flex:1; }
   .fw-card .meta{ font-family:var(--mono); font-size:12px; color:var(--ink-faint); }
   .btn{
-    display:inline-flex; align-items:center; gap:8px;
+    display:inline-flex; align-items:center; gap:8px; justify-content:center;
     background:var(--ink); color:var(--paper);
-    border:none; border-radius:10px;
-    padding:11px 16px; font-size:14px; font-weight:600;
-    font-family:var(--sans); cursor:pointer; text-decoration:none;
-    transition:opacity .15s;
+    border:none; border-radius:10px; padding:11px 16px;
+    font-size:14px; font-weight:600; font-family:var(--sans);
+    cursor:pointer; text-decoration:none; transition:opacity .15s;
   }
   .btn:hover{ opacity:.85; text-decoration:none; }
-  .btn.muted{ background:transparent; color:var(--ink); border:1px solid var(--line); }
-
+  .btn.ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .pill-status{
+    align-self:flex-start; font-family:var(--mono); font-size:12px;
+    border:1px dashed var(--ink-faint); color:var(--ink-soft);
+    border-radius:999px; padding:5px 12px;
+  }
   .kit{
     margin-top:16px; padding:18px 22px;
     background:var(--paper-card); border:1px dashed var(--line);
@@ -119,12 +119,8 @@
   }
   .kit a{ font-weight:600; }
 
-  /* steps */
   ol.steps{ list-style:none; counter-reset:s; padding:0; }
-  ol.steps li{
-    counter-increment:s; position:relative;
-    padding-left:42px; margin-bottom:18px;
-  }
+  ol.steps li{ counter-increment:s; position:relative; padding-left:42px; margin-bottom:18px; }
   ol.steps li::before{
     content:counter(s); position:absolute; left:0; top:0;
     width:28px; height:28px; border-radius:50%;
@@ -132,8 +128,6 @@
     font-family:var(--mono); font-size:14px; font-weight:700;
     display:flex; align-items:center; justify-content:center;
   }
-  ol.steps li b{ font-weight:600; }
-
   pre{
     background:var(--paper-card); border:1px solid var(--line);
     border-radius:10px; padding:14px 16px; overflow:auto;
@@ -141,22 +135,22 @@
   }
   pre .c{ color:var(--ink-faint); }
 
-  table{ width:100%; border-collapse:collapse; font-size:14px; }
-  th,td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); }
-  th{ font-weight:600; color:var(--ink-soft); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
-  td code{ font-size:13px; }
+  .faq details{
+    border:1px solid var(--line); border-radius:10px;
+    padding:14px 18px; margin-bottom:10px; background:var(--paper-card);
+  }
+  .faq summary{ cursor:pointer; font-weight:600; }
+  .faq details[open] summary{ margin-bottom:8px; }
+  .faq p{ font-size:14px; color:var(--ink-soft); margin:0; }
 
   .links{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width:560px){ .links{ grid-template-columns:1fr; } }
-  .link-card{
-    display:block; background:var(--paper-card); border:1px solid var(--line);
-    border-radius:12px; padding:18px;
-  }
+  .link-card{ display:block; background:var(--paper-card); border:1px solid var(--line); border-radius:12px; padding:18px; }
   .link-card:hover{ text-decoration:none; border-color:var(--ink-faint); }
   .link-card .t{ font-weight:600; color:var(--ink); margin-bottom:4px; }
   .link-card .d{ font-size:13px; color:var(--ink-soft); }
 
-  footer{ padding:32px 0 56px; color:var(--ink-faint); font-size:13px; }
+  footer{ padding:30px 0 50px; color:var(--ink-faint); font-size:13px; }
   footer a{ color:var(--ink-soft); }
 </style>
 </head>
@@ -164,9 +158,15 @@
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow"><span class="dot"></span>NFC · ePaper · 生产固件</div>
-    <h1>手机一碰,墨水屏就换图。</h1>
-    <p class="lead">专为 <b>Seeed XIAO nRF54LM20A + 2.13" ePaper</b> 设计的 NFC 电子墨水牌固件。用手机 NFC 写入图片或文字,屏上立即显示,断电不丢、重启自动恢复。本页可直接下载预编译固件并烧录,无需克隆源码、无需编译环境。</p>
+    <div class="hero-top">
+      <div class="eyebrow"><span class="dot"></span><span data-zh="NFC · ePaper · 生产固件" data-en="NFC · ePaper · Production Firmware">NFC · ePaper · 生产固件</span></div>
+      <div class="lang">
+        <button id="btn-zh" class="on" onclick="setLang('zh')">中</button>
+        <button id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+    <h1 data-zh="手机一碰,墨水屏就换图。" data-en="Tap with your phone, the e-ink changes.">手机一碰,墨水屏就换图。</h1>
+    <p class="lead" data-zh="专为 Seeed XIAO nRF54LM20A + 2.13&quot; ePaper 设计的 NFC 电子墨水牌固件。用手机 NFC 写入图片或文字,屏上立即显示,断电不丢、重启自动恢复。本页可直接下载预编译固件并烧录,无需克隆源码、无需编译环境。" data-en="Firmware for the Seeed XIAO nRF54LM20A + 2.13&quot; ePaper NFC e-ink tag. Write an image or text over NFC from your phone and it shows instantly — survives power loss and reboots. Download the prebuilt firmware here and flash it; no source clone or build toolchain needed.">专为 Seeed XIAO nRF54LM20A + 2.13" ePaper 设计的 NFC 电子墨水牌固件。用手机 NFC 写入图片或文字,屏上立即显示,断电不丢、重启自动恢复。本页可直接下载预编译固件并烧录,无需克隆源码、无需编译环境。</p>
     <div class="badges">
       <span class="badge">XIAO nRF54LM20A</span>
       <span class="badge">GDEY0213F51 / JD79661</span>
@@ -180,14 +180,13 @@
 <!-- 这是什么 -->
 <section>
   <div class="wrap">
-    <h2>这是什么</h2>
-    <p class="sub">一块 NFC 电子墨水牌</p>
-    <p>板子通电后初始化 NFC Type 4 Tag 与墨水屏。手机(用 NFC Tools 等 App)靠近写入一条 NDEF 消息,固件解析后立即在墨水屏上<b>完整刷新一次</b>——文字用 LVGL 渲染,图片走自研 <code>XEPR</code> 协议直接写入 framebuffer。</p>
+    <h2 data-zh="这是什么" data-en="What is this">这是什么</h2>
+    <p class="sub" data-zh="一块 NFC 电子墨水牌" data-en="An NFC e-ink tag">一块 NFC 电子墨水牌</p>
+    <p data-zh="板子通电后初始化 NFC Type 4 Tag 与墨水屏。手机(用 NFC Tools 等 App)靠近写入一条 NDEF 消息,固件解析后立即在墨水屏上完整刷新一次——文字用 LVGL 渲染,图片走自研 XEPR 协议直接写入 framebuffer。" data-en="On power-up the board initializes an NFC Type 4 Tag and the e-ink panel. Tap with a phone (e.g. the NFC Tools app) to write an NDEF message; the firmware parses it and does exactly one full refresh — text is rendered via LVGL, images go through the custom XEPR protocol straight into the framebuffer.">板子通电后初始化 NFC Type 4 Tag 与墨水屏。手机(用 NFC Tools 等 App)靠近写入一条 NDEF 消息,固件解析后立即在墨水屏上完整刷新一次——文字用 LVGL 渲染,图片走自研 XEPR 协议直接写入 framebuffer。</p>
     <ul>
-      <li><b>文字</b>:NDEF Text 记录,LVGL 显示。</li>
-      <li><b>图片</b>:XEPR 协议;黑白 1-bit(256×122),四色 2bpp。</li>
-      <li><b>持久化</b>:最近一次内容存入独立存储区,重启自动恢复。</li>
-      <li><b>分段写入</b>:四色大图可拆 <code>XEPR2A</code>/<code>XEPR2B</code> 两段分次写入,自动拼接 + CRC 校验。</li>
+      <li data-zh="文字:NDEF Text 记录,LVGL 显示。" data-en="Text: NDEF Text records, rendered by LVGL.">文字:NDEF Text 记录,LVGL 显示。</li>
+      <li data-zh="图片:XEPR 协议;黑白 1-bit(256×122)。" data-en="Images: XEPR protocol; 1-bit black/white (256×122).">图片:XEPR 协议;黑白 1-bit(256×122)。</li>
+      <li data-zh="持久化:最近一次内容存入独立存储区,重启自动恢复。" data-en="Persistence: last content is stored separately and restored on reboot.">持久化:最近一次内容存入独立存储区,重启自动恢复。</li>
     </ul>
   </div>
 </section>
@@ -195,30 +194,34 @@
 <!-- 固件下载 -->
 <section>
   <div class="wrap">
-    <h2>固件下载</h2>
-    <p class="sub">直接下载烧录,不用克隆代码、不用搭编译环境</p>
+    <h2 data-zh="固件下载" data-en="Firmware download">固件下载</h2>
+    <p class="sub" data-zh="直接下载烧录,不用克隆代码、不用搭编译环境" data-en="Download and flash directly — no source clone, no build toolchain">直接下载烧录,不用克隆代码、不用搭编译环境</p>
+
+    <div class="note" data-zh="下载的是 .hex 预编译固件(机器码),不是工程文件。直接烧进芯片就能运行,等价于'成品'。若要改代码,请取本仓库源码(见下方'配套工具与源码')。" data-en="The .hex is prebuilt machine code, not a project file. Flash it and it runs — it's the finished product. To modify code, get the source from the repo (see below).">下载的是 .hex 预编译固件(机器码),不是工程文件。直接烧进芯片就能运行,等价于"成品"。若要改代码,请取本仓库源码(见下方"配套工具与源码")。</div>
+
     <div class="fw-grid">
       <div class="fw-card">
-        <span class="tag">1-bit · 黑白</span>
-        <h3>标准固件</h3>
-        <p class="desc">支持 NDEF 文字与黑白图片。适用于普通黑白 ePaper 屏。</p>
+        <span class="tag" data-zh="1-bit · 黑白" data-en="1-bit · Black/White">1-bit · 黑白</span>
+        <h3 data-zh="标准固件(黑白)" data-en="Standard firmware (B/W)">标准固件(黑白)</h3>
+        <p class="desc" data-zh="支持 NDEF 文字与黑白图片。适用于普通黑白 ePaper 屏。这是当前推荐使用的版本。" data-en="Supports NDEF text and black/white images. For standard B/W ePaper panels. This is the recommended build.">支持 NDEF 文字与黑白图片。适用于普通黑白 ePaper 屏。这是当前推荐使用的版本。</p>
         <span class="meta">xiao_nrf54lm20a_epaper_nfc_bw.hex · 1.1 MB</span>
-        <a class="btn" href="firmware/xiao_nrf54lm20a_epaper_nfc_bw.hex" download>下载固件</a>
+        <a class="btn" href="firmware/xiao_nrf54lm20a_epaper_nfc_bw.hex" download data-zh="下载固件" data-en="Download firmware">下载固件</a>
       </div>
-      <div class="fw-card">
-        <span class="tag">2bpp · 四色</span>
-        <h3>四色固件</h3>
-        <p class="desc">四色面板模式(黑/白/红/黄),需 GDEY0213F51 四色屏。</p>
-        <span class="meta">xiao_nrf54lm20a_epaper_nfc_4color.hex · 1.1 MB</span>
-        <a class="btn" href="firmware/xiao_nrf54lm20a_epaper_nfc_4color.hex" download>下载固件</a>
+
+      <div class="fw-card" style="border-style:dashed;">
+        <span class="tag" data-zh="2bpp · 四色" data-en="2bpp · 4-color">2bpp · 四色</span>
+        <h3 data-zh="四色面板支持(完善中)" data-en="4-color panel support (WIP)">四色面板支持(完善中)</h3>
+        <p class="desc" data-zh="四色(黑/白/红/黄)图片数据量约 8 KB,超出了 NFC 单次文本写入的容量上限,因此该模式尚未作为成品固件发布。我们正通过 XEPR2A / XEPR2B 分段写入方案(分两次 NFC 写入再拼合并 CRC 校验)来解决,目前仍在完善。" data-en="A 4-color (B/W/R/Y) image is ~8 KB, exceeding what a single NFC text write can carry, so this mode is not shipped as a finished build yet. We are solving it with an XEPR2A / XEPR2B split-write scheme (two NFC writes, assembled and CRC-checked) — work in progress.">四色(黑/白/红/黄)图片数据量约 8 KB,超出了 NFC 单次文本写入的容量上限,因此该模式尚未作为成品固件发布。我们正通过 XEPR2A / XEPR2B 分段写入方案(分两次 NFC 写入再拼合并 CRC 校验)来解决,目前仍在完善。</p>
+        <span class="pill-status" data-zh="⚠ 正在完善中 · 欢迎协助" data-en="⚠ Work in progress · help welcome">⚠ 正在完善中 · 欢迎协助</span>
+        <a class="btn ghost" href="https://github.com/lsw031105guge-bit/NFC-epaoer-display-produce-code" target="_blank" rel="noopener" data-zh="查看源码与进展" data-en="View source & progress">查看源码与进展</a>
       </div>
     </div>
 
-    <div class="kit">
-      还需要烧录配置与脚本?一并下载:<br>
-      <a href="firmware/openocd.cfg" download>openocd.cfg</a>(自包含烧录配置)·
-      <a href="firmware/flash.sh" download>flash.sh</a>(macOS/Linux 一键脚本)·
-      <a href="firmware/flash.bat" download>flash.bat</a>(Windows 一键脚本)
+    <div class="kit" data-zh="烧录还需配置与脚本?一并下载:openocd.cfg(自包含烧录配置)· flash.sh(macOS/Linux 一键脚本)· flash.bat(Windows 一键脚本)" data-en="Need the flash config & scripts too? Download alongside: openocd.cfg (self-contained) · flash.sh (macOS/Linux) · flash.bat (Windows)">
+      <span>烧录还需配置与脚本?一并下载:</span>
+      <a href="firmware/openocd.cfg" download>openocd.cfg</a> ·
+      <a href="firmware/flash.sh" download>flash.sh</a> ·
+      <a href="firmware/flash.bat" download>flash.bat</a>
     </div>
   </div>
 </section>
@@ -226,46 +229,78 @@
 <!-- 烧录 -->
 <section>
   <div class="wrap">
-    <h2>烧录步骤</h2>
-    <p class="sub">板载 SAMD11 调试器,USB 直连,用 OpenOCD 烧录</p>
+    <h2 data-zh="烧录步骤" data-en="How to flash">烧录步骤</h2>
+    <p class="sub" data-zh="板载 SAMD11 调试器,USB 直连,用 OpenOCD 烧录——不需要 J-Link" data-en="Onboard SAMD11 debugger, USB direct, flashed with OpenOCD — no J-Link needed">板载 SAMD11 调试器,USB 直连,用 OpenOCD 烧录——不需要 J-Link</p>
+
+    <div class="note" data-zh="重要:本板自带 SAMD11 SWD 调试器,USB 线直连即可烧录,不需要外接 J-Link 或任何额外调试器。.hex 文件可以直接烧,不需要先转成其他格式。" data-en="Important: this board has a built-in SAMD11 SWD debugger — flash over a plain USB cable, no external J-Link or extra debugger required. The .hex can be flashed directly, no conversion needed.">重要:本板自带 SAMD11 SWD 调试器,USB 线直连即可烧录,不需要外接 J-Link 或任何额外调试器。.hex 文件可以直接烧,不需要先转成其他格式。</div>
+
     <ol class="steps">
-      <li><b>装 openocd。</b>推荐装 <a href="https://platformio.org/" target="_blank" rel="noopener">PlatformIO</a>,再装 Seeed platform(自带适配好的 openocd):
-        <pre><span class="c"># 装 Seeed platform(含 openocd 与 nRF54LM20A 板配置)</span>
+      <li>
+        <b data-zh="安装 openocd(一次性)。" data-en="Install openocd (one-time).">安装 openocd(一次性)。</b>
+        <span data-zh="推荐用 PlatformIO 装 Seeed platform,它自带适配好 nRF54LM20A 的 openocd:" data-en="Easiest: install PlatformIO, then the Seeed platform which ships a matching openocd:">推荐用 PlatformIO 装 Seeed platform,它自带适配好 nRF54LM20A 的 openocd:</span>
+        <pre><span class="c"># 1) 装 PlatformIO:https://platformio.org/</span>
+<span class="c"># 2) 装 Seeed platform(含 openocd 与 nRF54LM20A 板配置)</span>
 pio pkg install -g -p "https://github.com/Seeed-Studio/platform-seeedboards.git"
 
 <span class="c"># macOS:把 openocd 加入 PATH</span>
 export PATH="$HOME/Library/Application Support/Seeed/OpenOCD/tool-openocd/bin:$PATH"</pre>
       </li>
-      <li><b>USB-C 连接板子。</b>XIAO nRF54LM20A 的板载 SAMD11 会枚举为 CMSIS-DAP 调试器。</li>
-      <li><b>一键烧录。</b>把上面的固件 hex、<code>openocd.cfg</code>、<code>flash.sh</code>(或 <code>flash.bat</code>)放在同一目录后运行:
+      <li>
+        <b data-zh="USB-C 连接板子。" data-en="Connect the board over USB-C.">USB-C 连接板子。</b>
+        <span data-zh="板载 SAMD11 会枚举为 CMSIS-DAP 调试器,无需额外硬件。" data-en="The onboard SAMD11 shows up as a CMSIS-DAP debugger — no extra hardware.">板载 SAMD11 会枚举为 CMSIS-DAP 调试器,无需额外硬件。</span>
+      </li>
+      <li>
+        <b data-zh="下载本页固件与脚本。" data-en="Download the firmware and scripts.">下载本页固件与脚本。</b>
+        <span data-zh="把 .hex 固件、openocd.cfg、flash.sh(Windows 用 flash.bat)放在同一目录。" data-en="Put the .hex, openocd.cfg and flash.sh (or flash.bat on Windows) in the same folder.">把 .hex 固件、openocd.cfg、flash.sh(Windows 用 flash.bat)放在同一目录。</span>
+      </li>
+      <li>
+        <b data-zh="一键烧录。" data-en="Flash in one command.">一键烧录。</b>
         <pre><span class="c"># macOS / Linux</span>
 chmod +x flash.sh
-./flash.sh xiao_nrf54lm20a_epaper_nfc_bw.hex      <span class="c"># 黑白</span>
-./flash.sh xiao_nrf54lm20a_epaper_nfc_4color.hex  <span class="c"># 四色</span></pre>
-        <pre><span class="c"># 或手动调用 openocd</span>
-openocd -f openocd.cfg \
+./flash.sh xiao_nrf54lm20a_epaper_nfc_bw.hex
+
+<span class="c"># Windows</span>
+flash.bat xiao_nrf54lm20a_epaper_nfc_bw.hex</pre>
+        <span data-zh="或手动调用 openocd:" data-en="Or call openocd directly:">或手动调用 openocd:</span>
+        <pre>openocd -f openocd.cfg \
   -c "init" \
   -c "nrf54lm20a-load xiao_nrf54lm20a_epaper_nfc_bw.hex" \
   -c "reset" -c "exit"</pre>
       </li>
     </ol>
-    <p style="margin-top:8px;font-size:14px;color:var(--ink-soft);">烧录完成后板子自动复位运行。屏幕先显示欢迎画面,随后即可用手机 NFC 写入内容。</p>
+    <p style="margin-top:8px;font-size:14px;color:var(--ink-soft);" data-zh="烧录完成后板子自动复位运行,屏幕先显示欢迎画面,随后即可用手机 NFC 写入内容。" data-en="After flashing the board resets and runs — the screen shows a welcome screen, then you can write content over NFC from your phone.">烧录完成后板子自动复位运行,屏幕先显示欢迎画面,随后即可用手机 NFC 写入内容。</p>
+
+    <div class="faq" style="margin-top:24px;">
+      <h3 style="font-family:var(--serif);font-size:18px;margin-bottom:12px;" data-zh="常见问题" data-en="FAQ">常见问题</h3>
+      <details open>
+        <summary data-zh="下载的 .hex 是什么?是工程文件吗?" data-en="What is the .hex? Is it a project file?">下载的 .hex 是什么?是工程文件吗?</summary>
+        <p data-zh=".hex 是预编译好的机器码固件(Intel HEX 格式),是给芯片直接烧录用的'成品',不是工程文件。工程文件是源码(C/H 文件、CMakeLists、prj.conf 等),在本仓库里,给想修改或重新编译的人用。普通烧录只需 .hex。" data-en="The .hex is prebuilt machine code (Intel HEX) — the finished artifact you flash to the chip, not a project file. The project files (source, CMakeLists, prj.conf) are in the repo for people who want to modify or rebuild. To just flash, the .hex is all you need.">.hex 是预编译好的机器码固件(Intel HEX 格式),是给芯片直接烧录用的"成品",不是工程文件。工程文件是源码(C/H 文件、CMakeLists、prj.conf 等),在本仓库里,给想修改或重新编译的人用。普通烧录只需 .hex。</p>
+      </details>
+      <details>
+        <summary data-zh="没有 J-Link 能烧录吗?" data-en="Can I flash without a J-Link?">没有 J-Link 能烧录吗?</summary>
+        <p data-zh="能。XIAO nRF54LM20A 板载 SAMD11 协处理器作为 USB→SWD 调试桥,通过 OpenOCD(CMSIS-DAP)烧录,不需要 J-Link。一条 USB-C 数据线即可。" data-en="Yes. The XIAO nRF54LM20A has an onboard SAMD11 co-processor acting as a USB→SWD debug bridge; OpenOCD (CMSIS-DAP) flashes it with no J-Link. A USB-C data cable is enough.">能。XIAO nRF54LM20A 板载 SAMD11 协处理器作为 USB→SWD 调试桥,通过 OpenOCD(CMSIS-DAP)烧录,不需要 J-Link。一条 USB-C 数据线即可。</p>
+      </details>
+      <details>
+        <summary data-zh="烧录报错'未找到 openocd'?" data-en="'openocd not found'?">烧录报错"未找到 openocd"?</summary>
+        <p data-zh="说明 openocd 没在 PATH 里。按第 1 步装好 Seeed platform 后,把它的 openocd 目录加入 PATH(macOS 路径见上方命令)。Windows 同理,把 openocd.exe 所在目录加入系统 PATH。" data-en="openocd isn't on your PATH. After installing the Seeed platform (step 1), add its openocd folder to PATH (macOS path shown above). On Windows, add the folder containing openocd.exe to the system PATH.">说明 openocd 没在 PATH 里。按第 1 步装好 Seeed platform 后,把它的 openocd 目录加入 PATH(macOS 路径见上方命令)。Windows 同理,把 openocd.exe 所在目录加入系统 PATH。</p>
+      </details>
+    </div>
   </div>
 </section>
 
 <!-- 配套 -->
 <section>
   <div class="wrap">
-    <h2>配套工具与源码</h2>
-    <p class="sub">网页工具帮你把图片转成 NFC 数据;源码用于自行修改与编译</p>
+    <h2 data-zh="配套工具与源码" data-en="Tools & source">配套工具与源码</h2>
+    <p class="sub" data-zh="网页工具帮你把图片转成 NFC 数据;源码用于自行修改与编译" data-en="The web tool turns images into NFC data; the source is for modifying and rebuilding">网页工具帮你把图片转成 NFC 数据;源码用于自行修改与编译</p>
     <div class="links">
       <a class="link-card" href="https://github.com/lsw031105guge-bit/xiao-epaper-web" target="_blank" rel="noopener">
-        <div class="t">NFC ePaper Image Converter ↗</div>
-        <div class="d">纯网页工具:上传图片 → 自动转 XEPR 数据 → 用手机 NFC Tools 写入本设备。与固件解耦。</div>
+        <div class="t" data-zh="NFC ePaper Image Converter ↗" data-en="NFC ePaper Image Converter ↗">NFC ePaper Image Converter ↗</div>
+        <div class="d" data-zh="纯网页工具:上传图片 → 自动转 XEPR 数据 → 用手机 NFC Tools 写入本设备。与固件解耦。" data-en="Web tool: upload an image → get XEPR data → write to the device with NFC Tools. Decoupled from firmware.">纯网页工具:上传图片 → 自动转 XEPR 数据 → 用手机 NFC Tools 写入本设备。与固件解耦。</div>
       </a>
       <a class="link-card" href="https://github.com/lsw031105guge-bit/NFC-epaoer-display-produce-code" target="_blank" rel="noopener">
-        <div class="t">本仓库源码 ↗</div>
-        <div class="d">完整固件源码、设备树 overlay、JD79661 驱动与 XEPR 协议实现,含从源码编译说明。</div>
+        <div class="t" data-zh="本仓库源码 ↗" data-en="This repo's source ↗">本仓库源码 ↗</div>
+        <div class="d" data-zh="完整固件源码、设备树 overlay、JD79661 驱动与 XEPR 协议实现,含从源码编译说明。" data-en="Full firmware source, devicetree overlays, JD79661 driver and XEPR protocol, with build instructions.">完整固件源码、设备树 overlay、JD79661 驱动与 XEPR 协议实现,含从源码编译说明。</div>
       </a>
     </div>
   </div>
@@ -273,10 +308,27 @@ openocd -f openocd.cfg \
 
 <footer>
   <div class="wrap">
-    基于 Nordic Semiconductor <code>writable_ndef_msg</code> sample 修改 · LicenseRef-Nordic-5-Clause ·
-    <a href="https://github.com/lsw031105guge-bit/NFC-epaoer-display-produce-code" target="_blank" rel="noopener">在 GitHub 上查看</a>
+    <span data-zh="基于 Nordic Semiconductor writable_ndef_msg sample 修改 · LicenseRef-Nordic-5-Clause ·" data-en="Modified from Nordic's writable_ndef_msg sample · LicenseRef-Nordic-5-Clause ·">基于 Nordic Semiconductor writable_ndef_msg sample 修改 · LicenseRef-Nordic-5-Clause ·</span>
+    <a href="https://github.com/lsw031105guge-bit/NFC-epaoer-display-produce-code" target="_blank" rel="noopener" data-zh="在 GitHub 上查看" data-en="View on GitHub">在 GitHub 上查看</a>
   </div>
 </footer>
+
+<script>
+  function setLang(l){
+    document.documentElement.lang = (l==='en') ? 'en' : 'zh-CN';
+    document.querySelectorAll('[data-zh]').forEach(function(el){
+      el.innerHTML = (l==='en') ? el.dataset.en : el.dataset.zh;
+    });
+    try{ localStorage.setItem('epd-lang', l); }catch(e){}
+    var z=document.getElementById('btn-zh'), e=document.getElementById('btn-en');
+    if(z&&e){ z.className = (l==='zh')?'on':''; e.className = (l==='en')?'on':''; }
+  }
+  (function(){
+    var saved='zh';
+    try{ saved = localStorage.getItem('epd-lang') || 'zh'; }catch(e){}
+    setLang(saved);
+  })();
+</script>
 
 </body>
 </html>

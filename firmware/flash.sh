@@ -3,8 +3,9 @@
 # XIAO nRF54LM20A 一键烧录脚本 (macOS / Linux)
 #
 # 用法:
-#   ./flash.sh                       # 烧录默认的黑白(1-bit)固件
-#   ./flash.sh xiao_nrf54lm20a_epaper_nfc_4color.hex   # 烧录 4 色固件
+#   ./flash.sh                                          # 烧录默认的黑白(1-bit)固件
+#   ./flash.sh xiao_nrf54lm20a_epaper_nfc_bw.hex        # 显式指定黑白固件
+#   ./flash.sh <其它.hex>                                # 烧录任意 hex 固件
 #
 # 前置:
 #   1. 用 USB-C 线连接 XIAO nRF54LM20A(板载 SAMD11 调试器会枚举为 CMSIS-DAP)
